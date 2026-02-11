@@ -5,6 +5,7 @@
 <summary>Install PowerShell 7.5.4</summary>
 <br />
 
+- `$PSVersionTable` - verify the version of Powershell
 - Close all powershell terminals
 - Download an MSI instaler and install it
 - `pwsh` - verify it is installed. Output: PowerShell 7.5.4 or later
