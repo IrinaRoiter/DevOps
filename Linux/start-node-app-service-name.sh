@@ -1,8 +1,6 @@
 #!/bin/bash
 # EXERCISE 9: Bash Script - Node App with Service user
-# You've been running the application with your user. 
-# But we need to adjust that and create own service user: myapp for the application to run. 
-# So extend the script to create the user and then run the application with the service user. 
+# Implements the same logic as start-node-app.sh script but runs the Node application with the service user. 
 
 function install-app {
 

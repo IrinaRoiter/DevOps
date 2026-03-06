@@ -1,12 +1,4 @@
 #!/bin/bash
-# 
-# To run this script, execute the following command in terminal:
-# sudo ./start-node-app.sh node-js-log
-# Before re-running the script, make sure to stop the NodeJS app by running the following command:
-# sudo pkill -f "node server.js"
-#
-# The script implements the exercises 6, 7 and 8 of the Linux module of the DevOps Bootcamp.
-# Context: We have a ready NodeJS application that needs to run on a server. The app is already configured to read in environment variables.
 #
 #EXERCISE 6: Bash Script - Start Node App
 #Write a bash script with following logic: 
@@ -17,28 +9,19 @@
 #Set the following needed environment variables: APP_ENV=dev, DB_USER=myuser, DB_PWD=mysecret
 #Change into the unzipped package directory
 #Run the NodeJS application by executing the following commands:  npm install and node server.js
-#Notes:
-#
-#Make sure to run the application in background so that it doesn't block the terminal session where you execute the shell script
-#If any of the variables is not set, the node app will print error message that env vars is not set and exit
-#It will give you a warning about LOG_DIR variable not set. You can ignore it for now.
-#
 #
 #EXERCISE 7: Bash Script - Node App Check Status
 #Extend the script to check after running the application that the application has successfully started and prints out the application's running process and the port where it's listening. 
 #
 #EXERCISE 8: Bash Script - Node App with Log Directory
 #Extend the script to accept a parameter input log_directory: a directory where application will write logs.
-#
 #The script will check whether the parameter value is a directory name that doesn't exist and will create the directory, if it does exist, it sets the env var LOG_DIR to the directory's absolute path before running the application, so the application can read the LOG_DIR environment variable and write its logs there.
-#
-#Note:
-#
-#Check the app.log file in the provided LOG_DIR directory.
-#This is what the output of running the application must look like: node-app-output.png
-#
-#
-#
+################################
+# To run this script, execute the following command in terminal:
+# sudo ./start-node-app.sh node-js-log
+# Before re-running the script, make sure to stop the NodeJS app by running the following command:
+# sudo pkill -f "node server.js"
+
 
 function install-app {
 

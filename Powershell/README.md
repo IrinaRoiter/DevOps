@@ -1,4 +1,21 @@
-# Find-FilesByNamePatternAndContent.ps1
+# Powershell scripts
+
+## Find-FilesByNamePatternAndContent.ps1
+
+This PowerShell script searches for files within a specified base directory that match a given **file name pattern** and contain a specified **text string** in their content.
+
+<details>
+<summary>How to run Find-FilesByNamePatternAndContent.ps1</summary>
+<br />
+
+.\Find-FilesByNamePatternAndContent.ps1 -BasePath "c:\temp\my-dir" -NamePattern "260208" -SearchString "Hello"
+
+
+</details>
+
+## Find-FilesByNamePatternAndContent-Azure.ps1
+<br />
+The script finds all the files recursively starting from top level blob container that match NamePattern, then download all the files that contain SearchString into C:\Users\user-profile\Downloads\NamePattern_Date_Time folder.
 <br />
 
 <details>
@@ -34,10 +51,10 @@ Az.Storage 9.6.0   C:\Users\<userprofile>\Documents\PowerShell\Modules\Az.Storag
 </details>
 
 <details>
-<summary>How to run Find-FilesByNamePatternAndContent.ps1</summary>
+<summary>How to run Find-FilesByNamePatternAndContent-Azure.ps1</summary>
 <br />
 
 .\Find-FilesByNamePatternAndContent-Azure.ps1 -StorageAccountName "mystorageaccount" -SasToken "sv=..." -ContainerName "test" -NamePattern "260208" -SearchString "Hello"
 
-Result: the script will find all the files recursively starting from top level blob container that match NamePatter, then download all the files that contain SearchString into C:\Users\,user profile>\Downloads\<NamePattern>_<Date>_<Time> folder
+
 </details>
