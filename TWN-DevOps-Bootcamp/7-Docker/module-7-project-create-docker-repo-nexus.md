@@ -68,10 +68,13 @@ tcp6       0      0 :::22                   :::*                    LISTEN      
 
 * Open port 8083 on Digital Ocean Firewall
 ```
+ℹ️ My public IP address: https://whatismyipaddress.com/
+
 Networking->Firewalls->my-droplet-firewall
 New Inbound rule
 Type: Custom
 Port: 8083
+Sources: only my public IP address
 Add inbound rule
 ```
 * Allow Docker bearer to connect to docker hosted repo on Nexus

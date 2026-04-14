@@ -95,7 +95,7 @@ drwxr-xr-x 3 nexus nexus      4096 Mar  6 19:02 sonatype-work
 Follow instructions under "allow ssh connection with service account" section in the file:
 https://gitlab.com/IrinaRoiter/java-react-example/-/blob/3a0b5562fd1f0de747a1ce8ec137164d0b86a224/module-5-project.md
 ```
-* Configure Nexus app to run under
+* Configure Nexus app to run under 'nexus' account
 ```
 root@ubuntu-s-4vcpu-8gb-tor1-01:/opt# vim ./nexus-3.90.1-01/bin/nexus.rc
 Insert 
@@ -126,7 +126,10 @@ tcp6       0      0 :::22                   :::*                    LISTEN      
 ```
 * Nexus app runs on port 8081. Open port 8081 to outside connections
 ```
-Networking -> Firewalls -> Inboubd rules -> New rule -> Type: Custom -> Port 8081 -> Save
+ℹ️ My public IP address: https://whatismyipaddress.com/
+
+Networking -> Firewalls -> Inboubd rules -> New rule -> Type: Custom -> Port 8081 -> Sources: only my public IP address ->Save
+
 ```
 * Connect to Nexus from a browser
 ```

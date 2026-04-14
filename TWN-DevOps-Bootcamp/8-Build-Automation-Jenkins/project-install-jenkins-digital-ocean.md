@@ -26,11 +26,14 @@ Rename it to 'jenkins-server'
 ```
 * Create a new Firewall for Jenkins
 ```
+ℹ️ My public IP address: https://whatismyipaddress.com/
+
 Networking -> Firewalls -> Create Firewall
 Inboubd rules -> New rule
 Type: Custom
 Protocol: TCP
 Port 8080
+Sources: only my public IP address 
 Add inbound rule
 Apply to Droplet - jenkins-server
 Name: jenkins-firewall
@@ -42,7 +45,7 @@ Create
 
 *  Install docker and start Jenkins container
 ```
-PS C:\repos\DevOps> ssh root@178.128.231.59
+PS C:\repos\DevOps> ssh root@165.227.47.177
 ```
 ```
 root@ubuntu-s-2vcpu-4gb-tor1-01:~#  apt update
@@ -98,7 +101,7 @@ CONTAINER ID   IMAGE                 COMMAND                  CREATED          S
 <details>
 <summary><b>Initialize Jenkins</b></summary>
 
-* Connect from the browser - http://178.128.231.59:8080/
+* Connect from the browser - http://165.227.47.177:8080/
 * Login with initial password
 ```
 root@ubuntu-s-2vcpu-4gb-tor1-01:~# docker exec -it 9da29d19fb28 bash

@@ -21,11 +21,13 @@ Settings -> Security ->Add SSH Key
 ```
 * Create Firewall
 ```
+ℹ️ My public IP address: https://whatismyipaddress.com/
+
 Networking -> Firewalls -> Create Firewall
 ```
 * Open only port 22 to outside connections
 ```
-Inboubd rules -> New rule -> Type: SSH -> Port 22 is selected automatically -> Sources -> allowed IP -> Save
+Inboubd rules -> New rule -> Type: SSH -> Port 22 is selected automatically -> Sources -> my public IP only  -> Save
 ```
 * Create Ubuntu VM
 ```
