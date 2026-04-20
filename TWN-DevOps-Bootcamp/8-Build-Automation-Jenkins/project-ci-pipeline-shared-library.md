@@ -72,7 +72,7 @@ Jenkinsfile:
 https://gitlab.com/IrinaRoiter/java-maven-app/-/blob/3399c3e916b8e00ceb99b1a02603fbcab904f060/Jenkinsfile
 
 Docker.groovy
-https://gitlab.com/twn-devops-bootcamp/latest/08-jenkins/jenkins-shared-library/-/blob/1551012961b229a26e98f2e2aa06603f07aedbae/src/com/example/Docker.groovy
+https://gitlab.com/IrinaRoiter/jenkins-shared-library/-/blob/b456a1a1ca73369f471ac3453ead35823a43a614/src/com/example/Docker.groovy
 
 BuildDockerImage.groovy:
 https://gitlab.com/IrinaRoiter/jenkins-shared-library/-/blob/b456a1a1ca73369f471ac3453ead35823a43a614/vars/buildDockerImage.groovy
