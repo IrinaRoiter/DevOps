@@ -1,4 +1,4 @@
-# Module 8 - Containers with Docker
+# Module 8 - Build Automation and CI/CD with Jenkins
 ## Demo Project:
 Install Jenkins on Digital Ocean 
 ## Technologies used:
@@ -134,7 +134,7 @@ root@ubuntu-s-2vcpu-4gb-tor1-01:~# cat /var/lib/docker/volumes/jenkins_home/_dat
 
 root@ubuntu-s-2vcpu-4gb-tor1-01:~#
 ```
-* Create am admin user
+* Create an admin user
 ```
 name: admin
 password: admin

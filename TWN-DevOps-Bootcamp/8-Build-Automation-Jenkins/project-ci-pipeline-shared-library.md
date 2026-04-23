@@ -1,4 +1,4 @@
-# Module 8 - Containers with Docker
+# Module 8 - Build Automation and CI/CD with Jenkins
 ## Demo Project:
 Create a Jenkins Shared Library (JSL)
 ## Technologies used:
