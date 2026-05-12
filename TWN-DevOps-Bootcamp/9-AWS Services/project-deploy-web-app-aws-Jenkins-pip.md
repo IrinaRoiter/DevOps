@@ -53,6 +53,7 @@ Accept default regular expression '.*' - matches all the branches
 ```
 Kind: ssh username with private key
 ID: ec2-server-key
+Username: ec2-user
 Private Key: enter directly
 Extract the content of "C:\Users\user\.ssh\irina-vms.pem" file, copy and paste it in the provided area. Make sure to copy/paste everything including:
 -----BEGIN OPENSSH PRIVATE KEY-----

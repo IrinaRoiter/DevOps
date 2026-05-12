@@ -50,7 +50,7 @@ https://gitlab.com/IrinaRoiter/java-maven-app/-/blob/06927df55679ce0df514b0cb650
 </details>
 
 <details>
-<summary><b>Configure Jenkins pipeline to deploy newly built image using Docker Compose on EC2 serverb></b></summary>
+<summary><b>Configure Jenkins pipeline to deploy newly built image using Docker Compose on EC2 server</b></summary>
 
 Jenkinsfile:
 https://gitlab.com/IrinaRoiter/java-maven-app/-/blob/cdcc7627991f0dc1aff9d1ea2f8791e3ec6e88c7/Jenkinsfile

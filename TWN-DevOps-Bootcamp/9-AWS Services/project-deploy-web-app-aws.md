@@ -53,7 +53,7 @@ Create instance
 ```
 * Connect to it
 ```
-PS C:\repos\jenkins-exercises> 
+PS C:\Repos\js-app>  ssh -i C:\Users\user\.ssh\irina-vms.pem ec2-user@35.183.44.148
 
 The authenticity of host '35.183.44.148 (35.183.44.148)' can't be established.
 ED25519 key fingerprint is SHA256:Qv4jaH8ODo2DRDc6cdYOJ6rCuqIgH+3QY7YnhG2mj0M.
