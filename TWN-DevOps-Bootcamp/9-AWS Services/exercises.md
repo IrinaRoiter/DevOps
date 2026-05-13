@@ -3,6 +3,9 @@ Your company has decided that they will use AWS as a cloud provider to deploy th
 
 So you need to deploy the previous NodeJS application on an EC2 instance now. This means you need to create and prepare an EC2 server with the AWS Command Line Tool to run your NodeJS app container on it.
 
+## Repo: 
+https://gitlab.com/IrinaRoiter/aws-exercises
+
 <details>
 <summary><b>EXERCISE 1: Create IAM user</b></summary>
 
