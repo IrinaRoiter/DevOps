@@ -184,8 +184,40 @@ PS C:\Users\user>
 * Create a deployment with yaml config file
 
 Create a yaml file with basic configuration - nginx-deployment.yaml
-
+https://github.com/IrinaRoiter/DevOps/blob/0ea78512d81d80a2097305d3bfbad25de90990a2/TWN-DevOps-Bootcamp/10-K8s/nginx-deployment.yaml
 ```
 PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl apply -f nginx-deployment.yaml
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get pod
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-569f95f5cb-dzzm5   1/1     Running   0          6m41s
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get deployment
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   1/1     1            1           7m15s
 ```
+* Update deployment 
+```
+Edit nginx-deployment.yaml. Increase number of replicas from 1 to 2. Save.
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl apply -f nginx-deployment.yaml
+deployment.apps/nginx-deployment configured 👈🏻 Notice that deployment is now 'configured'
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get deployment
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   2/2     2            2           12m
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get pod
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-569f95f5cb-5dkkx   1/1     Running   0          3m40s 👈🏻 new pod
+nginx-deployment-569f95f5cb-dzzm5   1/1     Running   0          16m 👈🏻 old pod
+```
+</details>
+
+<details>
+<summary><b>Yaml configuration file main components</b></summary>
+
+Service file:
+
+
 </details>
