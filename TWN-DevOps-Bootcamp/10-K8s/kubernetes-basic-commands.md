@@ -1,9 +1,8 @@
 # Module 10 - Kubernetes
 ## Demo Project:
-Deploy MongoDB and Mongo Express into local K8s
-cluster
+Create an nginx depoyment, edit it, get pod log, create mongoDB deployment, enter container, delete deployment
 ## Technologies used:
-Kubernetes, Docker, MongoDB, Mongo Express
+Kubernetes, Docker
 ## Project Description:
 Setup local K8s cluster with Minikube Deploy MongoDB and MongoExpress with configuration and credentials extracted into ConfigMap and Secret
 

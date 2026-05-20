@@ -14,7 +14,7 @@ Setup local K8s cluster with Minikube Deploy MongoDB and MongoExpress with confi
  
 
 <details>
-<summary><b>Install mini-kube and kubectl</b></summary>
+<summary><b>Configure and start MongoDB deployment</b></summary>
 
 * Starting point - empty cluster, only default service is running
 ```
@@ -121,6 +121,11 @@ NAME                                 READY   STATUS    RESTARTS   AGE   IP      
 mongodb-deployment-df5cd6568-vfrn6   1/1     Running   0          23m   10.244.0.15   minikube   <none>           <none>
                                                                         👆🏻 pod IP
 ```
+</details>
+
+<details>
+<summary><b>Configure and start Mongo-Express deployment</b></summary>
+
 * Write a config file for Mongo-Express
 
 File: mongo-express.yaml
@@ -209,14 +214,13 @@ Browser opens up at - http://127.0.0.1:53480
 
 ![mongo-express](images/mongo-express-deployed.png)
 ```
-⚠️ Defualt values were used to authenticate to Mongo-Express service. 
+⚠️ Default values were used to authenticate to Mongo-Express service. 
 Default values can be obtained this way:
 
 PS C:\Users\user> kubectl logs mongo-express-5747d566b9-6hvzk
 Waiting for mongodb-service:27017...
 No custom config.js found, loading config.default.js
 Welcome to mongo-express 1.0.2
-------------------------
 
 Mongo Express server listening at http://0.0.0.0:8081
 Server is open to allow connections from anyone (0.0.0.0)
