@@ -51,10 +51,30 @@ deployment.apps "mosquitto" deleted from default namespace
 * Overwrite a default config file with external config file by mounting it inside the container
 
 Config-map file:
+https://github.com/IrinaRoiter/DevOps/blob/d0177a27fc7a863e61d7612f1031331df2166c96/TWN-DevOps-Bootcamp/10-K8s/config-file.yaml
 
 Secret file:
-
+https://github.com/IrinaRoiter/DevOps/blob/d0177a27fc7a863e61d7612f1031331df2166c96/TWN-DevOps-Bootcamp/10-K8s/secret-file.yaml
 
 ```
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl apply -f config-file.yaml
+configmap/mosquitto-config-file created
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl apply -f secret-file.yaml
+secret/mosquitto-secret-file created
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get secret
+NAME                    TYPE     DATA   AGE
+mongodb-secret          Opaque   2      10d
+mosquitto-secret-file   Opaque   1      3m24s
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get configmap
+NAME                    DATA   AGE
+kube-root-ca.crt        1      11d
+mongodb-configmap       1      10d
+mosquitto-config-file   1      5m50s
 ```
+
+Mosquitto deployment file with volumes:
+
 </details> 
