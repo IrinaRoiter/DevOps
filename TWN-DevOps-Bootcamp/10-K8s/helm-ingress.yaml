@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
     name: mongo-express
 spec:
-  ingressClassName: nginx-ingress
+  ingressClassName: nginx
   rules:
   - host: 172-105-1-237.ip.linodeusercontent.com
     http:
