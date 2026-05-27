@@ -10,8 +10,6 @@ Setup local K8s cluster with Minikube Deploy MongoDB and MongoExpress with confi
 
 # Solution
 
-## Repo:
- 
 
 <details>
 <summary><b>Configure and start MongoDB deployment</b></summary>
