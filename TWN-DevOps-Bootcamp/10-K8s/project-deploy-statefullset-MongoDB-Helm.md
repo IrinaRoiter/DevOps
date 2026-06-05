@@ -123,12 +123,12 @@ Then, run the following command:
     mongosh admin --host "mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017,mongodb-2.mongodb-headless.default.svc.cluster.local:27017" --authenticationDatabase admin -u $MONGODB_ROOT_USER -p $MONGODB_ROOT_PASSWORD
 
 ```
-ℹ️
-helm -tool
-install - command
-mongodb - name
-helm-mongodb.yaml - custom values file
-bitnami/mongodb - chart name
+ℹ️ </br>
+helm -tool </br>
+install - command </br>
+mongodb - name </br>
+helm-mongodb.yaml - custom values file </br>
+bitnami/mongodb - chart name </br>
 
 * Verify that pods are running  
 ```
@@ -330,6 +330,8 @@ DNS name: 172-105-1-237.ip.linodeusercontent.com
 * Create Ingress rule:
 
 Ingress file:
+https://github.com/IrinaRoiter/DevOps/blob/1fd2be7df718a2b604a50ebf3b422b9d609491ee/TWN-DevOps-Bootcamp/10-K8s/helm-ingress.yaml
+
 
 * Apply Ingress rule to the cluster
 ```
@@ -342,5 +344,54 @@ mongo-express   nginx-ingress   172-105-1-237.ip.linodeusercontent.com          
 ```
 * Access "172-105-1-237.ip.linodeusercontent.com" from the browser
 
-error: 404 Not Found
+</details> 
+<details>
+<summary><b>Verify data persistance</b></summary>
+
+* Create a new database and a new collection in it
+![Mongo-Express-From-Browser](images/cluster-accessible-from-browser.png)
+
+* Remove all the pods under statefulset/mongodb by scaling them to 0
+```
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl  scale --replicas=0 statefulset/mongodb
+statefulset.apps/mongodb scaled
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get pod
+NAME                                                      READY   STATUS    RESTARTS   AGE
+mongo-express-fd8bc9dcf-zm8t8                             1/1     Running   0          4h1m
+mongodb-arbiter-0                                         1/1     Running   0          5h55m
+nginx-ingress-ingress-nginx-controller-6fc4c9ff49-n88hd   1/1     Running   0          3h32m
+👆🏻 All the pods are gone
+
+```
+
+* Create new pods for statefulset/mongodb
+```
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl  scale --replicas=3 statefulset/mongodb
+statefulset.apps/mongodb scaled
+```
+</details> 
+<details>
+<summary><b>Uninstall helm charts, remove cluster</b></summary>
+
+* Uninstall helm chart
+```
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> helm ls
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+mongodb         default         1               2026-05-27 09:44:38.0409739 -0400 EDT   deployed        mongodb-19.0.7          8.3.2
+nginx-ingress   default         1               2026-05-27 12:08:03.5138955 -0400 EDT   deployed        ingress-nginx-4.15.1    1.15.1
+
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> helm uninstall mongodb
+release "mongodb" uninstalled
+👉🏻 When Helm chart is uninstalled it removes all the pods 
+PS C:\repos\DevOps\TWN-DevOps-Bootcamp\10-K8s> kubectl get pod
+NAME                                                      READY   STATUS    RESTARTS   AGE
+mongo-express-fd8bc9dcf-zm8t8                             1/1     Running   0          4h19m
+nginx-ingress-ingress-nginx-controller-6fc4c9ff49-n88hd   1/1     Running   0          3h49m
+```
+* Delete cluster from Linode UI
+```
+Linode->Kubernetes->select your cluster->Delete
+```
+
 </details> 
