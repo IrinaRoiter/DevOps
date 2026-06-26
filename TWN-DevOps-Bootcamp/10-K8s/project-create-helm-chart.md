@@ -6,6 +6,7 @@ Kubernetes, Helm
 ## Project Description:
 Create 1 shared Helm Chart for all microservices, to reuse
 common Deployment and Service configurations for the services
+Deploy Microservices with Helm
 
 # Repo:
 
@@ -324,6 +325,10 @@ spec:
       - name: redis-data
         emptyDir: {}
 ```
+</details>
+<details>
+<summary><b>Deploy microservices with Helm</b></summary>
+
 * Deploy everything with a script
 
 https://github.com/IrinaRoiter/helm-chart-microservices/blob/84d6bf6497498d8be2626c8927414193352057df/install.ps1
