@@ -172,7 +172,16 @@ https://github.com/IrinaRoiter/helm-chart-microservices/blob/f2606351bda92a151de
 PS C:\Repos\helm-chart-microservices\charts> helm create redis
 Creating redis
 ```
-* Preapre all the YAML files of the chart
+* Prepare YAML manifests files of the chart
+
+https://github.com/IrinaRoiter/helm-chart-microservices/blob/0380d4989c17231b0ee4ded650d840374539dd78/charts/redis/templates/deployment.yaml
+
+https://github.com/IrinaRoiter/helm-chart-microservices/blob/0380d4989c17231b0ee4ded650d840374539dd78/charts/redis/templates/service.yaml
+
+https://github.com/IrinaRoiter/helm-chart-microservices/blob/0380d4989c17231b0ee4ded650d840374539dd78/charts/redis/values.yaml
+
+https://github.com/IrinaRoiter/helm-chart-microservices/blob/0380d4989c17231b0ee4ded650d840374539dd78/values/redis-values.yaml
+
 
 * Validate redis chart
 ```
@@ -238,4 +247,193 @@ spec:
         emptyDir: {}
 ```
 
+* Verify redis helm chart with dry-run option
+```
+PS C:\Repos\helm-chart-microservices> helm install --dry-run  -f .\values\redis-values.yaml redis-cart .\charts\redis
 
+👉🏻 'redis-cart' - release name (appName)
+--dry-run - preview mode, no actual install
+
+level=WARN msg="--dry-run is deprecated and should be replaced with '--dry-run=client'"
+NAME: redis-cart
+LAST DEPLOYED: Thu Jun 25 14:08:52 2026
+NAMESPACE: default
+STATUS: pending-install
+REVISION: 1
+DESCRIPTION: Dry run complete
+TEST SUITE: None
+HOOKS:
+MANIFEST:
+---
+# Source: redis/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cart
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-cart
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+
+---
+# Source: redis/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cart
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis-cart
+  template:
+    metadata:
+      labels:
+        app: redis-cart
+    spec:
+      containers:
+      - name: redis-cart
+        image: "redis:alpine"
+        ports:
+        - containerPort: 6379
+        livenessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 6379
+          periodSeconds: 5
+        readinessProbe:
+          initialDelaySeconds: 5
+          tcpSocket:
+            port: 6379
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 70m
+            memory: 200Mi
+          limits:
+            cpu: 125m
+            memory: 300Mi
+        volumeMounts:
+        - name: redis-data
+          mountPath:
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+```
+* Deploy everything with a script
+
+https://github.com/IrinaRoiter/helm-chart-microservices/blob/84d6bf6497498d8be2626c8927414193352057df/install.ps1
+
+```
+PS C:\repos\helm-chart-microservices> .\install.ps1
+NAME: redis-cart
+LAST DEPLOYED: Thu Jun 25 14:59:46 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: emailservice
+LAST DEPLOYED: Thu Jun 25 14:59:47 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: adservice
+LAST DEPLOYED: Thu Jun 25 14:59:48 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: cartservice
+LAST DEPLOYED: Thu Jun 25 14:59:49 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: checkoutservice
+LAST DEPLOYED: Thu Jun 25 14:59:49 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: currencyservice
+LAST DEPLOYED: Thu Jun 25 14:59:50 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: frontend
+LAST DEPLOYED: Thu Jun 25 14:59:51 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: paymentservice
+LAST DEPLOYED: Thu Jun 25 14:59:52 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: productcatalogservice
+LAST DEPLOYED: Thu Jun 25 14:59:53 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: recommendationservice
+LAST DEPLOYED: Thu Jun 25 14:59:54 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME: shippingservice
+LAST DEPLOYED: Thu Jun 25 14:59:55 2026
+NAMESPACE: microservices
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+PS C:\repos\helm-chart-microservices>
+```
+
+* Check pods
+```
+PS C:\repos\helm-chart-microservices> kubectl get pod
+NAME                                     READY   STATUS    RESTARTS   AGE
+adservice-6bc97f5c69-cgf7q               1/1     Running   0          71s
+adservice-6bc97f5c69-qwb69               1/1     Running   0          71s
+cartservice-6685ccbfd5-ls7nq             1/1     Running   0          70s
+cartservice-6685ccbfd5-xr2hg             1/1     Running   0          70s
+checkoutservice-5ddf6f97dd-qcbwd         1/1     Running   0          70s
+checkoutservice-5ddf6f97dd-qkbzf         1/1     Running   0          70s
+currencyservice-5f94f77bd9-bm6qd         1/1     Running   0          69s
+currencyservice-5f94f77bd9-h2l5h         1/1     Running   0          69s
+emailservice-5bfb757754-br4fq            1/1     Running   0          72s
+emailservice-5bfb757754-zzqwg            1/1     Running   0          72s
+frontend-774d5dddc7-2ltwn                1/1     Running   0          67s
+frontend-774d5dddc7-sh4q6                1/1     Running   0          67s
+paymentservice-dd989b544-pvp8b           1/1     Running   0          66s
+paymentservice-dd989b544-pxwb5           1/1     Running   0          66s
+productcatalogservice-6b99844786-2l4jl   1/1     Running   0          65s
+productcatalogservice-6b99844786-x4j89   1/1     Running   0          65s
+recommendationservice-747db4b555-99wng   1/1     Running   0          65s
+recommendationservice-747db4b555-mjlz9   1/1     Running   0          65s
+redis-cart-9795bb64c-9vpqs               1/1     Running   0          72s
+redis-cart-9795bb64c-dwqd6               1/1     Running   0          72s
+shippingservice-7b89dcc654-7brgd         1/1     Running   0          64s
+shippingservice-7b89dcc654-pnbnx         1/1     Running   0          64s
+```
