@@ -167,7 +167,7 @@ mysql> SHOW DATABASES;
 | Database           |
 +--------------------+
 | information_schema |
-| irina-db           |
+| irina-db           |-app
 | performance_schema |
 +--------------------+
 3 rows in set (0.02 sec)
