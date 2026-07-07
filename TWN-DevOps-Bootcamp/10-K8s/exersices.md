@@ -270,5 +270,151 @@ phpmyadmin-app-bbfbf7467-bhcct    1/1     Running   0             2m39s 👈🏻
 * Connect to phpmysql via browser
 ![phpmysql](images/phpmysql-running.png)
 </details>
+<details>
+<summary><b>EXERCISE 5: Deploy Ingress Controller</b></summary>
+
+* Deploy Ingress Controller in the cluster - using Helm
+```
+PS C:\repos\kubernetes-exercises> helm search repo ingress
+NAME                                    CHART VERSION   APP VERSION     DESCRIPTION
+bitnami/nginx-ingress-controller        12.0.7          1.13.1          NGINX Ingress Controller is an Ingress controll... 
+ingress-nginx/ingress-nginx             4.15.1          1.15.1          Ingress controller for Kubernetes using NGINX a... 👈🏻 Ingress controller chart
+bitnami/contour                         21.1.4          1.32.1          Contour is an open source Kubernetes ingress co...
+bitnami/apisix                          6.0.0           3.13.0          Apache APISIX is high-performance, real-time AP...
+bitnami/contour-operator                4.2.1           1.24.0          DEPRECATED The Contour Operator extends the Kub...
+bitnami/envoy-gateway                   2.0.4           1.5.0           Envoy Gateway simplifies traffic management by ...
+bitnami/kong                            15.4.22         3.9.1           Kong is an open source Microservice API gateway...
+PS C:\repos\kubernetes-exercises> 
+
+PS C:\repos\kubernetes-exercises> helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "ingress-nginx" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+PS C:\repos\kubernetes-exercises>
+
+PS C:\repos\kubernetes-exercises> helm install nginx-ingress ingress-nginx/ingress-nginx `
+>>   --set controller.publishService.enabled=true
+NAME: nginx-ingress
+LAST DEPLOYED: Mon Jul  6 15:41:11 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+
+PS C:\repos\kubernetes-exercises> helm list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+mysql           default         1               2026-06-30 13:45:56.0862132 -0400 EDT   deployed        mysql-14.0.3            9.4.0
+nginx-ingress   default         1               2026-07-06 15:41:11.0058335 -0400 EDT   deployed        ingress-nginx-4.15.1    1.15.1
+
+PS C:\repos\kubernetes-exercises> kubectl get pods -n default
+NAME                                                      READY   STATUS    RESTARTS        AGE
+java-gradle-app-b98769776-jfjwm                           1/1     Running   6 (13m ago)     3d3h
+java-gradle-app-b98769776-w2wxp                           1/1     Running   11 (40m ago)    3d3h
+mysql-primary-0                                           1/1     Running   2 (3d21h ago)   6d2h
+mysql-secondary-0                                         1/1     Running   2 (3d21h ago)   6d2h
+mysql-secondary-1                                         1/1     Running   2 (3d21h ago)   6d1h
+nginx-ingress-ingress-nginx-controller-6fc4c9ff49-vm2dt   1/1     Running   0               4m44s 👈🏻 Ingress controller pod is up and running
+phpmyadmin-app-bbfbf7467-bhcct                            1/1     Running   0               3d
+PS C:\repos\kubernetes-exercises>
+
+```
+</details>
+<details>
+<summary><b>EXERCISE 6: Create Ingress rule</b></summary>
+
+Create an Ingress rule for your application’s access.
+If you are using Minikube, the application must be accessible on my-java-app.com
+
+* Map my-java-app.com to 127.0.0.1
+```
+On Windows 11:
+Open 'C:\Windows\System32\drivers\etc\hosts' in Notepad ++
+Add '127.0.0.1 my-java-app.com'
+Save 
+```
+
+* Create an ingress yaml file
+
+https://github.com/IrinaRoiter/kubernetes-exercises/blob/ff4599d8273d516752db4f862e54fdc674621a6a/java-gradle-ingress.yamls
+
+```
+PS C:\repos\kubernetes-exercises> kubectl apply -f java-gradle-ingress.yaml
+ingress.networking.k8s.io/java-gradle-app created
+
+PS C:\repos\kubernetes-exercises> kubectl get ingress
+NAME              CLASS   HOSTS             ADDRESS   PORTS   AGE
+java-gradle-app   nginx   my-java-app.com             80      4m33s
+```
+
+* Connect from browser to my java app, make an update
+
+![Java-Gradle-On-Domain-Name](images/java-gradle-domain-name.png)
+
+* Verify connection to my sql db
+
+![Phpmysql-updated](images/phpmysql-updated.png)
+
+💭 Since I have Ingress deployed there is not need to expose Java deployment and Phpmysql deployment outside of the cluster. Ingress should be the sigle entrypoint to cluster.
+
+* Change LoadBalancer type to ClusterIP type for java-gradle-app and phpmyadmin-app services
+
+https://github.com/IrinaRoiter/kubernetes-exercises/blob/92d3bf90c67c86fb888c2b3d7a3708586ab6b585/deployment.yaml#L68
+
+https://github.com/IrinaRoiter/kubernetes-exercises/blob/92d3bf90c67c86fb888c2b3d7a3708586ab6b585/php-deployment.yaml#L38
+
+```
+PS C:\repos\kubernetes-exercises> kubectl apply -f .\deployment.yaml
+deployment.apps/java-gradle-app configured
+service/java-gradle-app configured
+
+PS C:\repos\kubernetes-exercises> kubectl apply -f .\php-deployment.yaml
+deployment.apps/phpmyadmin-app unchanged
+service/phpmyadmin-app configured
+```
+```
+PS C:\repos\kubernetes-exercises> kubectl get svc
+NAME                                               TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+java-gradle-app                                    ClusterIP      10.99.199.149    <none>        8080/TCP                     4d
+kubernetes                                         ClusterIP      10.96.0.1        <none>        443/TCP                      54d
+mysql-primary                                      ClusterIP      10.105.232.141   <none>        3306/TCP                     6d22h
+mysql-primary-headless                             ClusterIP      None             <none>        3306/TCP                     6d22h
+mysql-secondary                                    ClusterIP      10.102.228.22    <none>        3306/TCP                     6d22h
+mysql-secondary-headless                           ClusterIP      None             <none>        3306/TCP                     6d22h
+nginx-ingress-ingress-nginx-controller             LoadBalancer   10.102.144.169   <pending>     80:31245/TCP,443:30357/TCP   20h
+nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.111.199.51    <none>        443/TCP                      20h
+phpmyadmin-app                                     ClusterIP      10.105.27.40     <none>        8081/TCP                     3d21h
+```
+</details>
+
+<details>
+<summary><b>EXERCISE 7: Port-forward for phpmyadmin</b></summary>
+
+However, you don't want to expose phpmyadmin for security reasons. So you configure port-forwarding for the service to access on localhost, whenever you need it.
+Configure port-forwarding for phpmyadmin
+
+* Start port-forwarding in the cluster
+```
+PS C:\repos\kubernetes-exercises> kubectl port-forward service/phpmyadmin-app 8081:8081
+Forwarding from 127.0.0.1:8081 -> 80
+Forwarding from [::1]:8081 -> 80
+Handling connection for 8081
+Handling connection for 8081
+```
+* Verify in the browser 
+![Port-forwarding](images/port-forwarding.png)
+</details>
+
+<details>
+<summary><b>EXERCISE 8: Create Helm Chart for Java App</b></summary>
+
+As the final step, you decide to create a helm chart for your Java application where all the configuration files are configurable. You can then tell developers how they can use it by setting all the chart values. This chart will be hosted in its own git repository.
+
+All config files: service, deployment, ingress, configMap, secret, will be part of the chart
+Create custom values file as an example for developers to use when deploying the application
+Deploy the java application using the chart with helmfile
+Host the chart in its own git repository
 
 
+</details>
