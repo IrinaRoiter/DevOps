@@ -1,7 +1,9 @@
 # Module 10 - Kubernetes
 
-## Repo: 
-https://gitlab.com/IrinaRoiter/aws-exercises
+## Repos: 
+
+https://github.com/IrinaRoiter/kubernetes-exercises
+https://github.com/IrinaRoiter/helm-chart-java-gradle
 
 <details>
 <summary><b>EXERCISE 1: Create a Kubernetes cluster</b></summary>
@@ -434,9 +436,23 @@ PS C:\repos\helm-chart-java-gradle>
 PS C:\repos\helm-chart-java-gradle> helm create java-gradle
 Creating java-gradle
 ```
-* Create custom templates, values.yaml, java app spesific values
+* Create custom templates, values.yaml, java app specific values
 
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle/templates/secret.yaml
 
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle/templates/config-map.yaml
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle/templates/deployment.yaml
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle/templates/service.yaml
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle/templates/ingress.yaml
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle/values.yaml
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/java-gradle-values.yaml
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle/blob/27a800855086f01b92445d54b35725a3172b96b3/helmfile.yaml
 
 * Validate Helm chart
 ```
