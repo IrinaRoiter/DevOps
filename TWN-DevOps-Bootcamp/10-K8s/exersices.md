@@ -396,7 +396,7 @@ Configure port-forwarding for phpmyadmin
 
 * Start port-forwarding in the cluster
 ```
-PS C:\repos\kubernetes-exercises> kubectl port-forward service/phpmyadmin-app 8081:8081
+PS C:\repos\kubernetes-exercises> kubectl port-forward   
 Forwarding from 127.0.0.1:8081 -> 80
 Forwarding from [::1]:8081 -> 80
 Handling connection for 8081
@@ -415,6 +415,279 @@ All config files: service, deployment, ingress, configMap, secret, will be part 
 Create custom values file as an example for developers to use when deploying the application
 Deploy the java application using the chart with helmfile
 Host the chart in its own git repository
+
+* Create a GitHub Repo and clone it locally
+
+https://github.com/IrinaRoiter/helm-chart-java-gradle
+
+```
+PS C:\repos> git clone git@github.com:IrinaRoiter/helm-chart-java-gradle.git
+Cloning into 'helm-chart-java-gradle'...
+warning: You appear to have cloned an empty repository.
+
+PS C:\repos> cd .\helm-chart-java-gradle\
+PS C:\repos\helm-chart-java-gradle>
+```
+
+* Create a default Helm chart
+```
+PS C:\repos\helm-chart-java-gradle> helm create java-gradle
+Creating java-gradle
+```
+* Create custom templates, values.yaml, java app spesific values
+
+
+
+* Validate Helm chart
+```
+PS C:\Repos\helm-chart-java-gradle> helm lint ./java-gradle
+==> Linting ./java-gradle
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+```
+* Validate values 
+```
+PS C:\Repos\helm-chart-java-gradle> helm template -f ./java-gradle-values.yaml java-gradle-release ./java-gradle
+---
+# Source: java-gradle/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: java-app-secret-file
+type: Opaque
+data:
+    db-user: "bXl1c2Vy"
+    db-password: "bXlwYXNzd29yZA=="
+    root-password: "cm9vdFBhc3N3b3Jk"
+---
+# Source: java-gradle/templates/config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: java-gradle-config-file
+data:
+  db-server: "mysql-primary"
+  db-name: "mydb"
+---
+# Source: java-gradle/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-gradle-app
+spec:
+  type: ClusterIP
+  selector:
+    app: java-gradle-app
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+---
+# Source: java-gradle/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-gradle-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: java-gradle-app
+  template:
+    metadata:
+      labels:
+        app: java-gradle-app
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+      containers:
+      - name: java-gradle-app
+        image: "docker.io/irinaroiter/demo-app:java-gradle-app-1.1"
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: "java-app-secret-file"
+                key: "db-user"
+          - name: DB_PWD
+            valueFrom:
+              secretKeyRef:
+                name: "java-app-secret-file"
+                key: "db-password"
+          - name: ROOT_PWD
+            valueFrom:
+              secretKeyRef:
+                name: "java-app-secret-file"
+                key: "root-password"
+          - name: DB_SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: "java-gradle-config-file"
+                key: "db-server"
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: "java-gradle-config-file"
+                key: "db-name"
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+
+---
+# Source: java-gradle/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: java-gradle-app
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: my-java-app.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: java-gradle-app
+              port:
+                number: 8080
+---
+# Source: java-gradle/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "java-gradle-release-test-connection"
+  labels:
+    helm.sh/chart: java-gradle-1.0.0
+    app.kubernetes.io/name: java-gradle
+    app.kubernetes.io/instance: java-gradle-release
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['java-gradle-release:8080']
+  restartPolicy: Never
+
+PS C:\Repos\helm-chart-java-gradle> 
+```
+👍🏻 Values look correct!
+
+* Delete deployment, configmap, secret, ingress from the cluster
+```
+PS C:\repos\helm-chart-java-gradle> kubectl delete -f "C:\Repos\kubernetes-exercises\deployment.yaml"
+deployment.apps "java-gradle-app" deleted from default namespace
+service "java-gradle-app" deleted from default namespace
+
+PS C:\repos\helm-chart-java-gradle> kubectl delete -f "C:\Repos\kubernetes-exercises\secret.yaml"
+secret "java-app-secret-file" deleted from default namespace
+
+PS C:\repos\helm-chart-java-gradle> kubectl delete -f "C:\Repos\kubernetes-exercises\config-map.yaml"
+configmap "java-gradle-config-file" deleted from default namespace
+
+PS C:\repos\helm-chart-java-gradle> kubectl delete -f "C:\Repos\kubernetes-exercises\java-gradle-ingress.yaml"
+ingress.networking.k8s.io "java-gradle-app" deleted from default namespace
+```
+
+* Install helm chart
+```
+PS C:\Repos\helm-chart-java-gradle> helm install -f ./java-gradle-values.yaml java-gradle-release ./java-gradle
+NAME: java-gradle-release
+LAST DEPLOYED: Wed Jul  8 12:59:20 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+PS C:\Repos\helm-chart-java-gradle> 
+```
+* Verify installation
+```
+PS C:\repos\helm-chart-java-gradle> kubectl get pods
+NAME                                                      READY   STATUS    RESTARTS        AGE
+java-gradle-app-5f4d4cb8b8-dwh6l                          1/1     Running   0               2m37s
+java-gradle-app-5f4d4cb8b8-gwpkd                          1/1     Running   0               2m37s
+nginx-ingress-ingress-nginx-controller-6fc4c9ff49-vm2dt   1/1     Running   0               45h
+phpmyadmin-app-bbfbf7467-bhcct                            1/1     Running   0               4d22h
+
+PS C:\repos\helm-chart-java-gradle> kubectl get ingress
+NAME              CLASS   HOSTS             ADDRESS   PORTS   AGE
+java-gradle-app   nginx   my-java-app.com             80      2m54s
+
+PS C:\repos\helm-chart-java-gradle> kubectl get configmap
+NAME                                     DATA   AGE
+java-gradle-config-file                  2      3m4s
+kube-root-ca.crt                         1      56d
+nginx-ingress-ingress-nginx-controller   0      45h
+
+PS C:\repos\helm-chart-java-gradle> kubectl get secret
+NAME                                        TYPE                             DATA   AGE
+dockerhub-secret                            kubernetes.io/dockerconfigjson   1      5d18h
+java-app-secret-file                        Opaque                           3      3m18s
+mysql                                       Opaque                           3      7d23h
+nginx-ingress-ingress-nginx-admission       Opaque                           3      45h
+sh.helm.release.v1.java-gradle-release.v1   helm.sh/release.v1               1      3m18s
+sh.helm.release.v1.mysql.v1                 helm.sh/release.v1               1      7d23h
+sh.helm.release.v1.nginx-ingress.v1         helm.sh/release.v1               1      45h
+
+PS C:\repos\helm-chart-java-gradle> kubectl get deployment
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+java-gradle-app                          2/2     2            2           5m46s
+nginx-ingress-ingress-nginx-controller   1/1     1            1           45h
+phpmyadmin-app                           1/1     1            1           4d22h
+```
+* Uninstall release
+```
+PS C:\Repos\helm-chart-java-gradle> helm uninstall java-gradle-release                          
+release "java-gradle-release" uninstalled
+```
+* Install release with helmfile
+```
+PS C:\Repos\helm-chart-java-gradle> helmfile sync
+Building dependency release=java-gradle-release, chart=./java-gradle
+Upgrading release=java-gradle-release, chart=./java-gradle, namespace=default
+Release "java-gradle-release" does not exist. Installing it now.
+NAME: java-gradle-release
+LAST DEPLOYED: Wed Jul  8 15:02:28 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+
+Listing releases matching ^java-gradle-release$
+java-gradle-release     default         1               2026-07-08 15:02:28.883245 -0400 EDT    deployed        java-gradle-1.0.0       1.0.0      
+
+
+UPDATED RELEASES:
+NAME                  NAMESPACE   CHART           VERSION   DURATION
+java-gradle-release   default     ./java-gradle   1.0.0           1s
+
+```
 
 
 </details>
